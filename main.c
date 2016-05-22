@@ -39,8 +39,16 @@ int
 main (int argc, char **argv)
 {
   GtkWidget *window, *box, *terminal, *scrollbar;
-  
-  gtk_init (&argc, &argv);
+  int fakeargc = 1;
+  char *command = NULL;
+  char **args = NULL;
+
+  if (argc > 1)
+	command = argv[1];
+  if (argc > 2)
+	args = &(argv[1]);
+ 
+  gtk_init (&fakeargc, &argv);
 
   window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
   g_signal_connect (window, "destroy", gtk_main_quit, NULL);
@@ -63,7 +71,7 @@ main (int argc, char **argv)
   gtk_box_pack_start (GTK_BOX (box), scrollbar, FALSE, FALSE, 0);
 
   vte_terminal_fork_command (VTE_TERMINAL (terminal),
-                             NULL, NULL, NULL, NULL, TRUE, TRUE, TRUE);
+                             command, args, NULL, NULL, TRUE, TRUE, TRUE);
 
   gtk_widget_show_all (window);
 
